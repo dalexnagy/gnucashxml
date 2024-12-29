@@ -38,9 +38,6 @@ class RightAlignDelegate(QtWidgets.QStyledItemDelegate):
         super(RightAlignDelegate, self).initStyleOption(option, index)
         option.displayAlignment = QtCore.Qt.AlignRight
 
-# set path from my own imports
-sys.path.insert(0, '/home/dave/Python/_Configs')
-
 # CONSTANTS & Globals
 # Globals
 # Get current date and set other variables
@@ -55,7 +52,7 @@ Workbook_Folder_name = my_home+"/GnuCash/Reports/"
 # Command to print the report
 lpr_cmd="lpr -o orientation-requested=4 -o cpi=12 -o page-left=36 -o page-top=36"
 # Book File Location
-book_file = "/home/dave/GnuCash/NagyFamily2024.gnucash"
+book_file = "<your gnucash book file>.gnucash"
 # Initialize transaction list
 transaction_list = []
 # List of master accounts to keep in list:
