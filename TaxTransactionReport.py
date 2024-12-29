@@ -29,13 +29,13 @@ Report_Folder_name = my_home+"/GnuCash/Reports/"
 # XLSX folder
 Workbook_Folder_name = my_home+"/GnuCash/Reports/"
 # Book File Location
-book_file = "/home/dave/GnuCash/NagyFamily2024.gnucash"
+book_file = "<your gnucash book file>.gnucash"
 # END OF CONSTANTS
 
 # Accounts to report
 TaxRelatedAccounts_list = []
 # Name of file containing list of accounts
-account_list_file = "/home/dave/Python/GnuCash/TaxRelatedAccounts.txt"
+account_list_file = "<your location>/TaxRelatedAccounts.txt"
 # Open file and read each entry;  Add each to the list
 with open(account_list_file) as f:
     for line in f:
@@ -251,7 +251,7 @@ def Create_Workbook(l):  # Open workbook
 
 #-------------
 
-book = gnucashxml.from_filename("/home/dave/GnuCash/NagyFamily2024.gnucash")
+book = gnucashxml.from_filename(book_file")
 
 for account, children, splits in book.walk():
     if len(splits) > 0 and account.name in TaxRelatedAccounts_list:
