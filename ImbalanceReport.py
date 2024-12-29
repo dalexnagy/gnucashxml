@@ -18,19 +18,20 @@ import ssl
 # GnuCash Structure import
 import gnucashxml
 
-sys.path.insert(0, '/home/dave/Python/_Configs')
+# Import email user id and password
+sys.path.insert(0, '<your home>/Python/_Configs')
 import _EMail
 
 # CONSTANTS & Globals
 account_to_check = "Imbalance-USD"
 # Get current date and set other variables
 today = date.today()
-notify_email = ["dalexnagy@gmail.com"]
+notify_email = ["<your email>" "<and others>"]
 # END OF CONSTANTS
 
 # -------------
 
-book = gnucashxml.from_filename("/home/dave/GnuCash/NagyFamily2024.gnucash")
+book = gnucashxml.from_filename("<your gnucash book file".gnucash)
 
 
 for account, children, splits in book.walk():
