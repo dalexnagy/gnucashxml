@@ -38,6 +38,9 @@ class RightAlignDelegate(QtWidgets.QStyledItemDelegate):
         super(RightAlignDelegate, self).initStyleOption(option, index)
         option.displayAlignment = QtCore.Qt.AlignRight
 
+# set path from my own imports
+sys.path.insert(0, '/home/dave/Python/_Configs')
+
 # CONSTANTS & Globals
 # Globals
 # Get current date and set other variables
@@ -52,7 +55,7 @@ Workbook_Folder_name = my_home+"/GnuCash/Reports/"
 # Command to print the report
 lpr_cmd="lpr -o orientation-requested=4 -o cpi=12 -o page-left=36 -o page-top=36"
 # Book File Location
-book_file = "<your gnucash book file>.gnucash"
+book_file = "/home/dave/GnuCash/NagyFamily2024.gnucash"
 # Initialize transaction list
 transaction_list = []
 # List of master accounts to keep in list:
@@ -162,6 +165,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.Transaction_List.setItemDelegateForColumn(0, CtrDelegate)
         self.Transaction_List.setItemDelegateForColumn(1, CtrDelegate)
         self.Transaction_List.setItemDelegateForColumn(3, RtDelegate)
+        # Set table to auto adjust
+        self.Transaction_List.setSizeAdjustPolicy(
+            QtWidgets.QAbstractScrollArea.AdjustToContents)
         # Set column widths
         header = self.Transaction_List.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
@@ -173,6 +179,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         table_row = 0
 
         for trx_date, trx_num, trx_desc, trx_amt in trx_list:
+            self.Transaction_List.resizeColumnsToContents()
             self.Transaction_List.insertRow(table_row)
             self.Transaction_List.setItem(table_row, 0, QTableWidgetItem(trx_date.strftime("%m/%d/%Y")))
             self.Transaction_List.setItem(table_row, 1, QTableWidgetItem(formatZeroNone(trx_num)))
