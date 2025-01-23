@@ -5,14 +5,16 @@
 # --- Change History ---
 # Program version 0
 # 2024-12-24 V1   - New
+# 2025-01-22 V1.1 - Added code to set workbook print parameters
 
-Program_Version = "V1.0"
+Program_Version = "V1.1"
 
 # System imports
 import sys
 from datetime import date
 from pathlib import Path
 # Openpyxl imports
+#import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import DEFAULT_FONT, Font, Alignment
 # GnuCash Structure import
@@ -29,13 +31,13 @@ Report_Folder_name = my_home+"/GnuCash/Reports/"
 # XLSX folder
 Workbook_Folder_name = my_home+"/GnuCash/Reports/"
 # Book File Location
-book_file = "<your gnucash book file>.gnucash"
+book_file = "/home/dave/GnuCash/NagyFamily2024.gnucash"
 # END OF CONSTANTS
 
 # Accounts to report
 TaxRelatedAccounts_list = []
 # Name of file containing list of accounts
-account_list_file = "<your location>/TaxRelatedAccounts.txt"
+account_list_file = "/home/dave/Python/GnuCash/TaxRelatedAccounts.txt"
 # Open file and read each entry;  Add each to the list
 with open(account_list_file) as f:
     for line in f:
@@ -155,6 +157,30 @@ def Create_Workbook(l):  # Open workbook
     ws.title = "Tax Related Transactions"
     DEFAULT_FONT.name = "FreeSans"
     DEFAULT_FONT.size = 10
+    # Create workbook title
+    ws["A1"] = report_title
+    ws["A1"].font = Font(bold=True)
+    ws['A1'].alignment = Alignment(horizontal='center')
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=6)
+    # Set page margins
+    ws.page_margins.left = 0.5
+    ws.page_margins.right = 0.5
+    ws.page_margins.top = 0.7
+    ws.page_margins.bottom = 1
+    ws.page_margins.header = 0.5
+    ws.page_margins.footer = 0.5
+
+    # Set paper orientation, size, and scale to fit columns to page
+    ws.page_setup.orientation = ws.ORIENTATION_PORTRAIT
+    ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
+    ws.page_setup.scale = 74
+    # Set print titles for every page
+    ws.print_title_rows = '1:3'
+    # Set printed page footer
+    ws.oddFooter.left.text = "Page &P of &N"
+    ws.evenFooter.left.text = "Page &P of &N"
+    ws.oddFooter.right.text = "&[Date]"
+    ws.evenFooter.right.text = "&[Date]"
 
     # Set column widths
     ws.column_dimensions['A'].width = 32
@@ -163,12 +189,6 @@ def Create_Workbook(l):  # Open workbook
     ws.column_dimensions['D'].width = 6
     ws.column_dimensions['E'].width = 32
     ws.column_dimensions['F'].width = 16
-
-    # Create workbook title
-    ws["A1"] = report_title
-    ws["A1"].font = Font(bold=True)
-    ws['A1'].alignment = Alignment(horizontal='center')
-    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=6)
 
     # Create Heading Row
     ws['A3'] = "TAX ACCOUNT"
@@ -251,7 +271,7 @@ def Create_Workbook(l):  # Open workbook
 
 #-------------
 
-book = gnucashxml.from_filename(book_file")
+book = gnucashxml.from_filename(book_file)
 
 for account, children, splits in book.walk():
     if len(splits) > 0 and account.name in TaxRelatedAccounts_list:

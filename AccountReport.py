@@ -14,7 +14,10 @@
 #                   2) Moved book file name to a variable in the constants area
 #                   3) Adjusted indent for account names
 # 2024-12-20 V1.7 - Added code to set folder name if the command line parameter is empty
+# 2025-01-22 V1.8 - Added code to set workbook print parameters
 #
+Program_Version = "V1.8"
+
 # System libraries
 from datetime import date
 from pathlib import Path
@@ -33,9 +36,8 @@ args = parser.parse_args()
 #print("args.directory=", args.directory)
 
 # CONSTANTS & Global Variables
-Program_Version = "V1.6"
 # Location of GnuCash file (book)
-GnuCash_Book = "<your GnuCash Book File>.gnucash"
+GnuCash_Book = "/home/dave/GnuCash/NagyFamily2024.gnucash"
 # Get current date and set other variables
 today = date.today()
 File_DatePrefix = "{:4d}-{:02d}-{:02d}".format(today.year, today.month, today.day)
@@ -122,6 +124,24 @@ ws = wb.active
 ws.title = "GnuCash Accounts"
 DEFAULT_FONT.name = "FreeSans"
 DEFAULT_FONT.size = 10
+# Set page margins
+ws.page_margins.left = 0.5
+ws.page_margins.right = 0.5
+ws.page_margins.top = 0.7
+ws.page_margins.bottom = 1
+ws.page_margins.header = 0.5
+ws.page_margins.footer = 0.5
+# Set paper orientation, size, and scale to fit columns to page
+ws.page_setup.orientation = ws.ORIENTATION_PORTRAIT
+ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
+ws.page_setup.scale = 83
+# Set print titles for every page
+ws.print_title_rows = '1:2'
+# Set printed page footer
+ws.oddFooter.left.text = "Page &P of &N"
+ws.evenFooter.left.text = "Page &P of &N"
+ws.oddFooter.right.text = "&[Date]"
+ws.evenFooter.right.text = "&[Date]"
 
 # Set column widths
 ws.column_dimensions['A'].width = 12    # Date & Account Tree
