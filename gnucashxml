@@ -2,8 +2,10 @@
 
 # Copyright (C) 2012 Jorgen Schaefer <forcer@forcix.cx>
 
-# Author: Jorgen Schaefer <forcer@forcix.cx>
-# V1.1: David Nagy (dalexnagy@gmail.com)
+# 2012 - V1.0
+# 	Author: Jorgen Schaefer <jorgen.schaefer@gmail.com>
+# 2025 - V2.0
+# 	Author: David Nagy (dalexnagy@gmail.com)
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,7 +20,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# 2024-12-08 v1.1 Added code for 'num' in transactions (DAN)
+# CHANGES
+# 2024-12-08 v2.0 Updated for Python 3.0; Added code for 'num' in transactions (DAN)
 
 import decimal
 import gzip
@@ -26,7 +29,7 @@ import gzip
 from dateutil.parser import parse as parse_date
 from xml.etree import ElementTree
 
-__version__ = "1.1"
+__version__ = "2.0"
 
 
 class Book(object):
