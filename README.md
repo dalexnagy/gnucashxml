@@ -1,18 +1,93 @@
 # gnucashxml
 Python library to read information from a GnuCash XML file
 
-This is a slightly modified version of the original Python library created by Jorgen Schaefer in 2012.  All credit for copyright goes to the author Jorgen Schaefer <forcer@forcix.cx>.
+This is an updated and slightly modified version of the original Python library created by Jorgen Schaefer in 2012. All credit for copyright goes to the author Jorgen Schaefer (jorgen.schaefer@gmail.com).
 
-The library seems to be abandoned and I wanted to add support for the transaction 'num' field.  This version 1.1 does have support to return the transaction num.
+This version (2.0) support Python V3 (3.6 & 3.8 support is verified - I have not verified other levels) and has support to return the transaction num.
 
-If you install 'gnucashxml' through PIP, you will get version 1.0 without support described above.  I found copies of this library in three folders on my Ubuntu 20.04 & Python 3.8 system:
-  * ~/lib/python3.8/site-packages
-  * /usr/local/lib/python3.8/site-packages
-  * ~/venv/lib/python3.8/site-packages
+-------------
 
-In this repository are examples of Python code written using this updated version gnucashxml to:
-  1. Dump the GnuCash structure elements (helped my development process)
-  2. Create a spreadsheet of current account balances
-  3. Create a report and/or spreadsheet of transactions in an account for a specific period (PyQT GUI)
-  4. Check if any entries exist in the 'Imbalance' account and notify me via email if any are found
+class Book(object):
+	A book is the main container for GNU Cash data.
 
+    It doesn't really do anything at all by itself, except to have
+    a reference to the accounts, transactions, and commodities.
+	
+	Implemented:
+	 - book:id
+	 - book:slots
+	 - gnc:commodity
+	 - gnc:account
+	 - gnc:transaction
+	
+	Not implemented:
+	 - gnc:schedxaction
+	 - gnc:template-transactions
+	 - gnc:count-data
+
+	
+class Commodity(object):
+	A commodity is something that's stored in GNU Cash accounts.
+
+    It consists of a name (or id) and a space (namespace).
+	
+	Implemented:
+	 - cmdty:id
+	 - cmdty:space
+
+	Not implemented:
+	 - cmdty:get_quotes => unknown, empty, optional
+	 - cmdty:quote_tz => unknown, empty, optional
+	 - cmdty:source => text, optional, e.g. "currency"
+	 - cmdty:name => optional, e.g. "template"
+	 - cmdty:xcode => optional, e.g. "template"
+	 - cmdty:fraction => optional, e.g. "1"
+
+
+class Account(object):
+    An account is part of a tree structure of accounts and contains splits.
+		
+	Implemented:
+	 - act:name
+	 - act:id
+	 - act:type
+	 - act:description
+	 - act:commodity
+	 - act:commodity-scu
+	 - act:parent
+	 - act:slots
+
+
+class Transaction(object):
+
+    A transaction is a balanced group of splits.
+	
+	Implemented:
+	 - trn:id
+	 - trn:currency
+	 - trn:num
+	 - trn:date-posted
+	 - trn:date-entered
+	 - trn:description
+	 - trn:splits / trn:split
+	 - trn:slots	
+
+class Split(object):
+
+    A split is one entry in a transaction.
+	
+	Implemented:
+	 - split:id
+	 - split:memo
+	 - split:reconciled-state
+	 - split:reconcile-date
+	 - split:value
+	 - split:quantity
+	 - split:account
+	 - split:slots
+		 Implemented:
+		 - slot
+		 - slot:key
+		 - slot:value
+		 - ts:date
+		 - gdate
