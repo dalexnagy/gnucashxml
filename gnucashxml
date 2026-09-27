@@ -40,12 +40,13 @@ class Book(object):
     a reference to the accounts, transactions, and commodities.
     """
     def __init__(self, guid, transactions=None, root_account=None,
-                 commodities=None, slots=None):
+                 commodities=None, slots=None, prices = None):
         self.guid = guid
         self.transactions = transactions or []
         self.root_account = root_account
         self.commodities = commodities or []
         self.slots = slots or {}
+        self.prices = prices or []
 
     def __repr__(self):
         return "<Book {}>".format(self.guid)
@@ -197,7 +198,29 @@ class Split(object):
         else:
             False
 
+class Price():
+    """
+    A price for a commodity
+    """
 
+    def __init__(self, guid = None, commodity = None, time = None,
+                 source = None, price_type = None, value = None):
+        self.guid = guid
+        self.commodity = commodity
+        self.time = time
+        self.source = source
+        self.price_type = price_type
+        self.value = value
+
+    def __repr__(self):
+        return "<Transaction on {} '{}' {}...>".format(self.commodity, self.time, self.value)
+
+    def __lt__(self, other):
+        # For sorted() only
+        if isinstance(other, Price):
+            return self.time < other.time
+        else:
+            False
 
 ##################################################################
 # XML file parsing
@@ -249,6 +272,12 @@ def _book_from_tree(tree):
         commodities.append(comm)
         commoditydict[(comm.space, comm.name)] = comm
 
+    prices = []
+    for pdb in tree.findall('{http://www.gnucash.org/XML/gnc}pricedb'):
+        for child in pdb:
+            price = _price_from_tree(child, commoditydict)
+            prices.append(price)
+
     root_account = None
     accountdict = {}
     parentdict = {}
@@ -277,7 +306,8 @@ def _book_from_tree(tree):
                 transactions=transactions,
                 root_account=root_account,
                 commodities=commodities,
-                slots=slots)
+                slots=slots,
+                prices=prices)
 
 
 # Implemented:
@@ -295,6 +325,48 @@ def _commodity_from_tree(tree):
     name = tree.find('{http://www.gnucash.org/XML/cmdty}id').text
     space = tree.find('{http://www.gnucash.org/XML/cmdty}space').text
     return Commodity(name=name, space=space)
+
+
+# Implemented
+# - price:id
+# - price:commodity
+# - price:time
+# - price:source
+# - price:type as price_type
+# - price:value
+
+# Not implemented:
+# - price:currency
+def _price_from_tree(tree, commoditydict):
+    price_path = '{http://www.gnucash.org/XML/price}'
+    cmdty_path = '{http://www.gnucash.org/XML/cmdty}'
+    ts_path = '{http://www.gnucash.org/XML/ts}'
+
+
+    guid = tree.find('{http://www.gnucash.org/XML/price}id').text
+
+    commodity_space = tree.find(price_path + 'commodity/' +
+                                    cmdty_path + 'space').text
+    commodity_name = tree.find(price_path + 'commodity/' +
+                                   cmdty_path + 'id').text
+    commodity = commoditydict[(commodity_space, commodity_name)]
+
+    time = parse_date(tree.find(price_path + 'time/' +
+                     ts_path + 'date').text)
+
+    source = tree.find('{http://www.gnucash.org/XML/price}source')
+    if source is not None:
+        source = source.text
+
+    price_type = tree.find('{http://www.gnucash.org/XML/price}type')
+    if price_type is not None:
+        price_type = price_type.text
+
+    value = _parse_number(tree.find('{http://www.gnucash.org/XML/price}value').text)
+
+    return Price(guid = guid, commodity = commodity, time = time,
+                 source = source, price_type = price_type, value = value)
+
 
 
 # Implemented:
